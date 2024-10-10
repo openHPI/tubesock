@@ -152,7 +152,7 @@ class Tubesock
       else
         data, _addrinfo = @socket.readpartial(2000), @socket.peeraddr
       end
-      break if data.empty?
+      break if data.nil? || data.empty?
       framebuffer << data
       while frame = framebuffer.next
         case frame.type
