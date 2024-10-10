@@ -102,7 +102,7 @@ class Tubesock
 
     @active = false
   end
-  
+
   def close!
     if @socket.respond_to?(:closed?)
       @socket.close unless @socket.closed?
@@ -142,7 +142,7 @@ class Tubesock
       else
         data, _addrinfo = @socket.readpartial(2000), @socket.peeraddr
       end
-      break if data.empty?
+      break if data.nil? || data.empty?
       framebuffer << data
       while frame = framebuffer.next
         case frame.type
