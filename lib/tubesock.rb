@@ -48,7 +48,7 @@ class Tubesock
       type: type
     )
     @socket.write frame.to_s
-  rescue IOError, Errno::EPIPE, Errno::ETIMEDOUT
+  rescue IOError, Errno::EPIPE, Errno::ETIMEDOUT, Errno::ECONNRESET
     close
   end
 
@@ -102,7 +102,7 @@ class Tubesock
 
     @active = false
   end
-  
+
   def close!
     if @socket.respond_to?(:closed?)
       @socket.close unless @socket.closed?
@@ -158,7 +158,7 @@ class Tubesock
         end
       end
     end
-  rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT, Errno::ECONNRESET, IOError, Errno::EBADF
+  rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT, Errno::ECONNRESET, IOError, Errno::EBADF, Errno::ENOTSOCK, Errno::ECONNABORTED
     nil # client disconnected or timed out
   end
 end
