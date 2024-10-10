@@ -49,7 +49,7 @@ class Tubesock
       type: type
     )
     @socket.write frame.to_s
-  rescue IOError, Errno::EPIPE, Errno::ETIMEDOUT, Errno::ECONNRESET
+  rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT, Errno::ECONNRESET, IOError, Errno::EBADF, Errno::ENOTSOCK, Errno::ECONNABORTED, Errno::EPIPE
     close
   end
 
@@ -168,7 +168,7 @@ class Tubesock
         end
       end
     end
-  rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT, Errno::ECONNRESET, IOError, Errno::EBADF, Errno::ENOTSOCK, Errno::ECONNABORTED
+  rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT, Errno::ECONNRESET, IOError, Errno::EBADF, Errno::ENOTSOCK, Errno::ECONNABORTED, Errno::EPIPE
     nil # client disconnected or timed out
   end
 end
