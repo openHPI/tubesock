@@ -33,7 +33,7 @@ module Tubesock::Hijack
         ActiveRecord::Base.clear_active_connections! if defined? ActiveRecord
       end
       sock.listen
-      render plain: nil, status: -1
+      render plain: nil, status: 101
     end
   end
 end

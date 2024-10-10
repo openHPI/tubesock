@@ -39,7 +39,7 @@ class Server
         puts "Got #{message}"
       end
       tubesock.listen
-      [ -1, {}, [] ]
+      [101, {}, [] ]
     else
       [404, {'Content-Type' => 'text/plain'}, ['Not Found']]
     end
