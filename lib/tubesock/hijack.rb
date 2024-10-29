@@ -34,6 +34,9 @@ module Tubesock::Hijack
       end
       sock.listen
       render plain: nil, status: 101
+    rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT, Errno::ECONNRESET, IOError, Errno::EBADF, Errno::ENOTSOCK, Errno::ECONNABORTED, Errno::EPIPE
+      sock&.close
+      render plain: nil, status: 426
     end
   end
 end
