@@ -158,7 +158,20 @@ class Tubesock
         case frame.type
         when :close
           return
-        when :text, :binary
+        when :text
+          # Assume UTF-8 encoding for text frames, which is the standard for WebSocket text frames.
+          # https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/send#string
+          # This encoding change is required, since the WebSocket::Frame::Incoming::Server always returns WebSocket::Frame::Data with ASCII-8BIT encoding.
+          # https://github.com/imanel/websocket-ruby/blob/8f9f4c12b60934a476b6c571aab33a84309a3c68/lib/websocket/frame/data.rb#L17
+          # Since faye-websocket-ruby 0.12.0, the encoding is used to determine the frame type, and ASCII-8BIT is used for binary frames.
+          # https://github.com/faye/faye-websocket-ruby/blob/0.12.0/CHANGELOG.md
+          # In Poseidon, however, we only allow UTF-8 encoded text frames:
+          # https://github.com/openHPI/poseidon/blob/d9919388a6bbb1add3c04002a6742ba40f5a4e41/internal/api/ws/codeocean_reader.go#L178-L181
+          # Therefore, we enforce the encoding to UTF-8 for **text frames** below.
+          # Binary frames are unchanged and remain ASCII-8BIT.
+          frame.data.force_encoding('UTF-8')
+          yield frame.data
+        when :binary
           yield frame.data
         when :ping
           # According to https://tools.ietf.org/html/rfc6455#section-5.5.3:
